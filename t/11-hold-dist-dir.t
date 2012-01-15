@@ -30,9 +30,11 @@ BEGIN {
 	ok(-f $dist_from_dir->file('dist.ini'),'Checking if file exist really from the directory distribution');
 
 	is_deeply($dist_from_dir->packages, {
-		'My::Sample::Distribution' => ['lib/My/Sample/Distribution.pm'],
-		'My::Sample::Documentation' => ['lib/My/Sample/Documentation.pod'],
-	},'Checking package definitions from the directory distribution');
+		'My::Sample::Distribution' => {
+			file => 'lib/My/Sample/Distribution.pm',
+			version => 0.003,
+		},
+	},'Checking packages from the directory distribution');
 
 }
 

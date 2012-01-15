@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+	Introduced namespaces and documentations
+	Added usage of Dist::Metadata for packages
 	Renamed distmeta to cpan_meta (and added cm shortcut)
 
 0.001     2012-01-15 02:42:09 Europe/Berlin

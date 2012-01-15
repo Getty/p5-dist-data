@@ -49,9 +49,19 @@ BEGIN {
 	},'Checking meta specification from meta');
 	
 	is_deeply($dist->packages, {
+		'My::Sample::Distribution' => {
+			file => 'lib/My/Sample/Distribution.pm',
+			version => 0.003,
+		},
+	},'Checking packages');
+	
+	is_deeply($dist->documentations, {
+		'My::Sample::Documentation' => 'lib/My/Sample/Documentation.pod',
+	},'Checking documentations');
+
+	is_deeply($dist->namespaces, {
 		'My::Sample::Distribution' => ['lib/My/Sample/Distribution.pm'],
-		'My::Sample::Documentation' => ['lib/My/Sample/Documentation.pod'],
-	},'Checking package definitions');
+	},'Checking namespaces');
 
 	is_deeply($dist->scripts, {
 		'my_sample_distribution' => 'bin/my_sample_distribution',

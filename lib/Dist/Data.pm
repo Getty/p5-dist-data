@@ -8,6 +8,7 @@ use File::Temp qw/ tempfile tempdir /;
 use File::Find::Object;
 use Module::Extract::Namespaces;
 use DateTime::Format::Epoch::Unix;
+use Dist::Metadata ();
 
 has filename => (
 	is => 'ro',
@@ -60,7 +61,21 @@ sub _build_cpan_meta {
 		CPAN::Meta->load_file($self->files->{'META.yml'});
 	} elsif ($self->files->{'META.json'}) {
 		CPAN::Meta->load_file($self->files->{'META.json'});
+	} else {
+		die "no META found";
 	}
+}
+
+has dist_metadata => (
+	is => 'ro',
+	lazy => 1,
+	builder => '_build_dist_metadata',
+);
+
+sub _build_dist_metadata {
+	my ( $self ) = @_;
+	$self->extract_distribution;
+	Dist::Metadata->new(dir => $self->dist_dir);
 }
 
 has dir => (
@@ -128,26 +143,72 @@ has packages => (
 
 sub _build_packages {
 	my ( $self ) = @_;
-	my %packages;
+	return $self->dist_metadata->determine_packages($self->cm);
+	# OLD - probably reused later if we introduce behaviour switches
+	# my %packages;
+	# for (keys %{$self->files}) {
+		# my $key = $_;
+		# my @components = split('/',$key);
+		# if ($key =~ /\.pm$/) {
+			# my @namespaces = Module::Extract::Namespaces->from_file($self->files->{$key});
+			# for (@namespaces) {
+				# $packages{$_} = [] unless defined $packages{$_};
+				# push @{$packages{$_}}, $key;
+			# }
+		# } elsif ($key =~ /^lib\// && $key =~ /\.pod$/) {
+			# my $packagename = $key;
+			# $packagename =~ s/^lib\///g;
+			# $packagename =~ s/\.pod$//g;
+			# $packagename =~ s/\//::/g;
+			# $packages{$packagename} = [] unless defined $packages{$packagename};
+			# push @{$packages{$packagename}}, $key;
+		# }
+	# }
+	# return \%packages;
+}
+
+has namespaces => (
+	is => 'ro',
+	lazy => 1,
+	builder => '_build_namespaces',
+);
+
+sub _build_namespaces {
+	my ( $self ) = @_;
+	my %namespaces;
 	for (keys %{$self->files}) {
 		my $key = $_;
-		my @components = split('/',$key);
-		if ($key =~ /\.pm$/) {
+		if ($key =~ /\.pm$/ || $key =~ /\.pl$/) {
 			my @namespaces = Module::Extract::Namespaces->from_file($self->files->{$key});
 			for (@namespaces) {
-				$packages{$_} = [] unless defined $packages{$_};
-				push @{$packages{$_}}, $key;
+				$namespaces{$_} = [] unless defined $namespaces{$_};
+				push @{$namespaces{$_}}, $key;
 			}
-		} elsif ($key =~ /^lib\// && $key =~ /\.pod$/) {
+		}
+	}
+	return \%namespaces;
+}
+
+has documentations => (
+	is => 'ro',
+	lazy => 1,
+	builder => '_build_documentations',
+);
+
+sub _build_documentations {
+	my ( $self ) = @_;
+	my %docs;
+	for (keys %{$self->files}) {
+		my $key = $_;
+		if ($key =~ /^lib\// && $key =~ /\.pod$/) {
 			my $packagename = $key;
 			$packagename =~ s/^lib\///g;
 			$packagename =~ s/\.pod$//g;
 			$packagename =~ s/\//::/g;
-			$packages{$packagename} = [] unless defined $packages{$packagename};
-			push @{$packages{$packagename}}, $key;
+			$docs{$packagename} = $key;
 		}
 	}
-	return \%packages;
+	return \%docs;
 }
 
 has scripts => (
@@ -242,8 +303,10 @@ sub BUILDARGS {
 
   my @authors = $dist->authors;
 
-  my %packages = %{$dist->packages};
-  my %scripts = %{$dist->scripts};
+  my %packages = %{$dist->packages};             # via Dist::Metadata
+  my %packages = %{$dist->namespaces};           # via Module::Extract::Namespaces
+  my %documentations = %{$dist->documentations}; # only .pod inside of lib/ (so far)
+  my %scripts = %{$dist->scripts};               # all files in bin/ and script/
   
 =head1 DESCRIPTION
 
