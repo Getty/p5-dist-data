@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+	Added dirs
 
 0.002     2012-01-15 06:48:29 Europe/Berlin
 	Introduced namespaces and documentations

@@ -106,6 +106,22 @@ sub _build_files {
 	return \%files;
 }
 
+has dirs => (
+	is => 'ro',
+	lazy => 1,
+	builder => '_build_dirs',
+);
+
+sub _build_dirs {
+	my ( $self ) = @_;
+	$self->extract_distribution;
+	my %dirs;
+	for ($self->get_directory_tree($self->dist_dir)) {
+		$dirs{join('/',@{$_->full_components})} = $_->path if $_->is_dir;
+	}
+	return \%dirs;
+}
+
 has dist_dir => (
 	is => 'ro',
 	lazy => 1,
