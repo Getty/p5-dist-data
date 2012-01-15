@@ -34,7 +34,8 @@ BEGIN {
 	ok(-f $dist->file('dist.ini'),'Checking if file exist');
 	is((stat($dist->file('dist.ini')))[7],214,'Checking filesize');
 	
-	isa_ok($dist->distmeta,'CPAN::Meta');
+	isa_ok($dist->cpan_meta,'CPAN::Meta');
+	isa_ok($dist->cm,'CPAN::Meta');
 	
 	is($dist->version,'0.003','Checking version from meta');
 	is($dist->name,'My-Sample-Distribution','Checking name from meta');

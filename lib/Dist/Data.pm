@@ -26,10 +26,10 @@ sub _build_archive {
 	return Archive::Any->new($self->filename);
 }
 
-has distmeta => (
+has cpan_meta => (
 	is => 'ro',
 	lazy => 1,
-	builder => '_build_distmeta',
+	builder => '_build_cpan_meta',
 	handles => [qw(
 		abstract
 		description
@@ -49,8 +49,12 @@ has distmeta => (
 		optional_features
 	)]
 );
+sub cm { shift->cpan_meta(@_) }
 
-sub _build_distmeta {
+# LEGACY
+sub distmeta { shift->cpan_meta(@_) }
+
+sub _build_cpan_meta {
 	my ( $self ) = @_;
 	if ($self->files->{'META.yml'}) {
 		CPAN::Meta->load_file($self->files->{'META.yml'});
@@ -230,7 +234,8 @@ sub BUILDARGS {
 
   my $filename_of_distini = $dist->file('dist.ini');
 
-  my $cpan_meta = $dist->distmeta; # gives back CPAN::Meta
+  my $cpan_meta = $dist->cpan_meta; # gives back CPAN::Meta
+  # alternative $dist->cm;
 
   my $version = $dist->version; # handled by CPAN::Meta object
   my $name = $dist->name;       # also
