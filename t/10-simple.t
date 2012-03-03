@@ -39,7 +39,6 @@ BEGIN {
 	
 	is($dist->version,'0.003','Checking version from meta');
 	is($dist->name,'My-Sample-Distribution','Checking name from meta');
-	is($dist->generated_by,'Dist::Zilla version 4.300003, CPAN::Meta::Converter version 2.113640','Checking generated_by from meta');
 	
 	is_deeply([$dist->authors],['Torsten Raudssus <torsten@raudssus.de>','Another Author <someone@somewhere>'],'Checking authors from meta');
 
