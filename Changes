@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.003     2012-03-03 20:53:03 Europe/Berlin
 	Added dirs
 
 0.002     2012-01-15 06:48:29 Europe/Berlin
