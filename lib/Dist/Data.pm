@@ -61,8 +61,6 @@ sub _build_cpan_meta {
 		CPAN::Meta->load_file($self->files->{'META.yml'});
 	} elsif ($self->files->{'META.json'}) {
 		CPAN::Meta->load_file($self->files->{'META.json'});
-	} else {
-		die "no META found";
 	}
 }
 
@@ -311,7 +309,8 @@ sub BUILDARGS {
 
   my $filename_of_distini = $dist->file('dist.ini');
 
-  my $cpan_meta = $dist->cpan_meta; # gives back CPAN::Meta
+  # gives back CPAN::Meta if the dist has one
+  my $cpan_meta = $dist->cpan_meta;
   # alternative $dist->cm;
 
   my $version = $dist->version; # handled by CPAN::Meta object
