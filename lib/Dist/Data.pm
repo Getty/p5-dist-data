@@ -57,10 +57,10 @@ sub distmeta { shift->cpan_meta(@_) }
 
 sub _build_cpan_meta {
 	my ( $self ) = @_;
-	if ($self->files->{'META.yml'}) {
-		CPAN::Meta->load_file($self->files->{'META.yml'});
-	} elsif ($self->files->{'META.json'}) {
+	if ($self->files->{'META.json'}) {
 		CPAN::Meta->load_file($self->files->{'META.json'});
+	} elsif ($self->files->{'META.yml'}) {
+		CPAN::Meta->load_file($self->files->{'META.yml'});
 	}
 }
 
