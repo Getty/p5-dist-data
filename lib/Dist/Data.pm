@@ -195,6 +195,7 @@ sub _build_namespaces {
 		if ($key =~ /\.pm$/ || $key =~ /\.pl$/) {
 			my @namespaces = Module::Extract::Namespaces->from_file($self->files->{$key});
 			for (@namespaces) {
+				next unless defined $_;
 				$namespaces{$_} = [] unless defined $namespaces{$_};
 				push @{$namespaces{$_}}, $key;
 			}
