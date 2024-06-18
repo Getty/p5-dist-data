@@ -6,7 +6,7 @@ use Archive::Any;
 use CPAN::Meta;
 use File::Temp;
 use File::Find::Object;
-use Module::Extract::Namespaces;
+use Module::Metadata;
 use DateTime::Format::Epoch::Unix;
 use Dist::Metadata ();
 
@@ -193,9 +193,10 @@ sub _build_namespaces {
 	for (keys %{$self->files}) {
 		my $key = $_;
 		if ($key =~ /\.pm$/ || $key =~ /\.pl$/) {
-			my @namespaces = Module::Extract::Namespaces->from_file($self->files->{$key});
+			my $metadata = Module::Metadata->new_from_file($self->files->{$key});
+			my @namespaces = $metadata->packages_inside;
 			for (@namespaces) {
-				next unless defined $_;
+				next unless defined $_ && $_ ne 'main';
 				$namespaces{$_} = [] unless defined $namespaces{$_};
 				push @{$namespaces{$_}}, $key;
 			}
