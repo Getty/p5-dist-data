@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.007     2024-06-19 23:40:43+02:00 Europe/Berlin
 	Replacing Module::Extract::Namespaces with Module::Metadata (haarg)
 	Bugfix for Win32 tests (Mithaldu)
 
