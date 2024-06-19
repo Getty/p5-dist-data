@@ -321,7 +321,7 @@ sub BUILDARGS {
   my @authors = $dist->authors;
 
   my %packages = %{$dist->packages};             # via Dist::Metadata
-  my %packages = %{$dist->namespaces};           # via Module::Extract::Namespaces
+  my %namespaces = %{$dist->namespaces};         # via Module::Metadata
   my %documentations = %{$dist->documentations}; # only .pod inside of lib/ (so far)
   my %scripts = %{$dist->scripts};               # all files in bin/ and script/
   
@@ -333,7 +333,7 @@ This distribution is used to get all information from a CPAN distribution or an 
 
 IRC
 
-  Join #duckduckgo on irc.freenode.net. Highlight Getty for fast reaction :).
+  Join #perl-help on irc.perl.org. Highlight Getty for fast reaction :).
 
 Repository
 
@@ -343,5 +343,4 @@ Repository
 Issue Tracker
 
   http://github.com/Getty/p5-dist-data/issues
-
 
